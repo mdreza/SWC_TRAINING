@@ -1758,6 +1758,72 @@ int main()
 	return 0;
 }
 
+//10487 - Closest Sums
+#include<iostream>
+#include<cstdio>
+#define MAX 1001
+#define QMAX 25
+using namespace std;
+
+unsigned int data[MAX];
+
+int findNearMax(int query,int length);
+void reset()
+{
+	for(int i=0;i<MAX;i++)
+		data[i]=0;
+}
+int main()
+{
+	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
+	int n=0,q=0;
+	int query;
+	int T =0;
+	while(scanf("%d",&n))
+	{
+		if(n==0)
+			break;
+		T++;
+		printf("Case %d:\n",T);
+		for(int i=0;i<n;i++)
+		{
+			scanf("%d",&data[i]);
+		}
+		scanf("%d",&q);
+		for(int i=0;i<q;i++)
+		{
+			scanf("%d",&query);
+			int value=findNearMax(query,n);
+			printf("Closest sum to %d is %d.\n",query,value);
+		}
+		reset();
+	}
+	return 0;
+}
+
+int findNearMax(int query,int length)
+{
+	int tempvalue=0;
+	int tempdistance=0;
+	int value=0;
+	int distance=100000001;
+	for(int i=0;i<length-1;i++)
+		for(int j=i+1;j<length;j++)
+		{
+			tempvalue=data[i]+data[j];
+			tempdistance=query-tempvalue;
+			if(tempdistance<0)
+				tempdistance*=-1;
+			if(tempdistance<distance)
+			{
+				distance=tempdistance;
+				value=tempvalue;
+			}
+		}
+		return value;
+}
+
 //336 - A Node Too Far
 
  
