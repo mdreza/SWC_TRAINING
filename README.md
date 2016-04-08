@@ -1660,6 +1660,103 @@ int main()
     return 0;
 }
 
+//167 - The Sultan's Successors
+#include<iostream>
+#include<cstdio>
+#define MAX 8
+unsigned int realboard[MAX][MAX];
+bool queenBoard[MAX][MAX]={false};
+int max=0;
+int temp=0;
+
+void resetdata()
+{
+	temp=0;
+	max=0;
+	for(int i=0;i<MAX;i++)
+			for(int j=0;j<MAX;j++)
+			{
+				realboard[i][j]=0;
+				queenBoard[i][j]=false;
+			}
+}
+bool clearToplace(int row,int colom)
+{
+	for(int i=0;i<MAX;i++)
+		if(queenBoard[i][colom]==1)
+			return false;
+	for(int j=0;j<MAX;j++)
+		if(queenBoard[row][j]==1)
+			return false;
+	for(int i=row,j=colom;(i>=0 && j>=0);i--,j--)
+		if(queenBoard[i][j]==1)
+			return false;
+	for(int i=row,j=colom;(i<MAX && j<MAX);i++,j++)
+		if(queenBoard[i][j]==1)
+			return false;
+	for(int i=row,j=colom;(i>=0 && j<MAX);i--,j++)
+		if(queenBoard[i][j]==1)
+			return false;
+	for(int i=row,j=colom;(i<MAX && j>=0);i++,j--)
+		if(queenBoard[i][j]==1)
+			return false;
+	return true;
+}
+
+int findvalue()
+{
+	int value=0;
+	for(int i=0;i<MAX;i++)
+			for(int j=0;j<MAX;j++)
+			{
+				if(queenBoard[i][j]==1)
+				{
+					value+=realboard[i][j];
+				}
+			}
+	return value;
+}
+
+void recursion(int row,int numberofplacedQueen)
+{
+	if(numberofplacedQueen==8)
+	{
+		temp=findvalue();
+		if(temp>max)
+			max=temp;
+		return;
+	}
+
+	for(int colom=0;colom<MAX;colom++)
+	{
+		if(clearToplace(row,colom))
+		{
+			queenBoard[row][colom]=1;
+			recursion(row+1,numberofplacedQueen+1);
+			queenBoard[row][colom]=0;
+
+		}
+	}
+}
+
+int main()
+{
+	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
+	int T=0;
+	scanf("%d",&T);
+	for(int t=1;t<=T;t++)
+	{
+		for(int i=0;i<MAX;i++)
+			for(int j=0;j<MAX;j++)
+				scanf("%d",&realboard[i][j]);
+
+		recursion(0,0);
+		printf("%5d\n",max);
+		resetdata();
+	}
+	return 0;
+}
 
 //336 - A Node Too Far
 
