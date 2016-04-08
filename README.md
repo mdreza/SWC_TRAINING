@@ -1434,6 +1434,232 @@ int main()
 	}
 }
  */
+ 
+ //8 queen simulation
+/*
+#include<iostream>
+using namespace std;
+
+int queenMap[8][8]={0};
+int total=0;
+int num=0;
+bool clearToPlace(int x,int y)
+{
+	// go up-dpwm
+	for(int i=0;i<8;i++)
+	{
+		if((queenMap[i][y]==1))
+			return false;
+	}
+	//go left right
+	for(int i=0;i<8;i++)
+	{
+		if((queenMap[x][i]==1))
+			return false;
+	}
+	// go down-right diagonal
+
+	for(int i=x,j=y;i<8 && j<8;i++,j++)
+	{
+		if((queenMap[i][j]==1))
+			return false;
+	}
+	
+	//go up left
+	for(int i=x,j=y;i>=0 && j>=0;i--,j--)
+	{
+		if((queenMap[i][j]==1))
+			return false;
+	}
+	//up right
+	for(int i=x,j=y;i>=0 && j<8;i--,j++)
+	{
+	if((queenMap[i][j]==1))
+			return false;
+	}
+	//down left
+	for(int i=x,j=y;i<8 && j>=0;i++,j--)
+	{
+	if((queenMap[i][j]==1))
+			return false;
+	}
+	// no case matched then return true
+	return true;
+}
+void printdata()
+{
+	for(int i=0;i<8;i++)
+	{
+		printf("\n");
+		for(int j=0;j<8;j++)
+		{
+			printf("%d ",queenMap[i][j]);
+		}
+
+	}
+	printf("\n");
+}
+
+void recur(int row,int totalQueenPlaced)
+{
+	num++;
+	int i=row;
+	if(totalQueenPlaced==8)
+	{
+		printdata();
+		printf("totalQueenPlaced: %d",totalQueenPlaced);
+		printf("\n--------------------------");
+		total++;
+		return;
+	}
+	for(int colom=0;colom<8;colom++)
+	{
+		if(clearToPlace(row,colom))
+		{
+			queenMap[row][colom]=1;
+			recur(row+1,totalQueenPlaced+1);
+			queenMap[row][colom]=0;
+		}
+	}
+}
+
+int main()
+{
+	freopen("output.txt","w",stdout);
+	recur(0,0);
+	printf("\n--- Total :%d ----",total);
+	return 0;	                                                                                                                                                                                                                                                                                                                                                                                                  return 0;
+}
+
+*/
+
+//11085 	Back to the 8-Queens
+#include<iostream>
+#include<cstdio>
+using namespace std;
+int board[8][8];
+int data[8];
+int finalMove=1000;
+
+void reset()
+{
+	for(int i=0;i<8;i++)
+	{
+		for(int j=0;j<8;j++)
+		{
+			board[i][j]=0;
+		}
+		data[i]=0;
+	}
+	finalMove=1000;
+}
+void printBoard()
+{
+     for(int i=0;i<8;i++)
+     {
+          printf("\n");
+         for(int j=0;j<8;j++)
+            printf("%d ",board[i][j]);
+     }
+}
+
+bool isSafeToPlace(int row,int colom)
+{
+    for(int j=colom;j>=0;j--)
+        if(board[row][j]==1)
+            return false;
+
+    for(int i=row,j=colom;(i<8 && j>=0);i++,j--)
+        if(board[i][j]==1)
+            return false;
+
+    for(int i=row,j=colom;(i>=0 && j>=0);i--,j--)
+        if(board[i][j]==1)
+            return false;
+
+    return true;
+}
+
+
+void recur(int colom,int move)
+{
+    //printf("recursion called \n");
+	
+    if(colom>7)
+    {
+		//printf("\n----------Move :%d-----------\n",move);
+		if(move<finalMove)
+			finalMove=move;
+		//printBoard();
+        return;
+    }
+
+
+    for(int row=0;row<8;row++)
+    {
+        
+            if(board[row][colom]==1)
+            {
+				board[row][colom]=0;
+				if(isSafeToPlace(row,colom))
+				{
+					board[row][colom]=1;
+					recur(colom+1,move);
+				}else
+				{
+					board[row][colom]=1;
+					//continue;
+				}
+               
+            }
+            else
+            {
+				if(isSafeToPlace(row,colom))
+				{
+					board[row][colom]=1;
+					board[data[colom]-1][colom]=0;
+					recur(colom+1,move+1);
+				    board[row][colom]=0;
+				    board[data[colom]-1][colom]=1;
+				}
+
+            }
+    }
+
+
+}
+int main()
+{
+	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
+	int T=0;
+	bool loop=true;
+	while(loop)
+	{
+		T++;
+		for(int i=0;i<8;i++)
+		{
+			if(scanf("%d",&data[i])==EOF)
+			{
+				loop=false;
+				break;
+			}
+		}
+		if(!loop)
+			continue;
+
+		for(int i=0;i<8;i++)
+		{
+			board[data[i]-1][i]=1;
+		}
+		//printBoard();
+		recur(0,0);
+		printf("Case %d: %d\n",T,finalMove);
+		reset();
+	}
+    return 0;
+}
+
 
 //336 - A Node Too Far
 
