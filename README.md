@@ -1824,6 +1824,113 @@ int findNearMax(int query,int length)
 		return value;
 }
 
+////216 - Getting in Line
+
+#include<iostream>
+#include<stdio.h>
+#include<math.h>
+#define MAX 10
+int N;
+int xcord[MAX],ycord[MAX];
+bool vis[MAX];
+int path[MAX];
+int tmpPath[MAX];
+float cableLength;
+void reset()
+{
+	N=0;
+	cableLength=1000000;
+	for(int i=0;i<MAX;i++)
+	{
+		vis[i]=false;
+		xcord[i]=0;
+		ycord[i]=0;
+		path[i]=-1;
+		tmpPath[i]=-1;
+	}
+}
+void copyPath()
+{
+	for(int i=0;i<MAX;i++)
+	{
+		path[i]=tmpPath[i];
+	}
+}
+void printPath()
+{
+	for(int i=0;i<N-1;i++)
+	{
+		if(path[i]>=0)
+		{
+			float value= ((xcord[path[i]]-xcord[path[i+1]])*(xcord[path[i]]-xcord[path[i+1]]) + (ycord[path[i]]-ycord[path[i+1]])*(ycord[path[i]]-ycord[path[i+1]]));
+			float result=sqrt(value)+16;
+			printf("Cable requirement to connect (%d,%d) to (%d,%d) is %.2f feet.\n",xcord[path[i]],ycord[path[i]],xcord[path[i+1]],ycord[path[i+1]],result);
+		}
+	}
+}
+float calculate(int index,int pindex)
+{
+	float value;
+	value= ((xcord[index]-xcord[pindex])*(xcord[index]-xcord[pindex]) + (ycord[index]-ycord[pindex])*(ycord[index]-ycord[pindex]));
+	float result=sqrt(value)+16;
+	//printf("Cable requirement to connect (%d,%d) to (%d,%d) is %f feet.\n",xcord[pindex],ycord[pindex],xcord[index],ycord[index],result);
+	return result;
+}
+void recur(int level,float sum,int pi)
+{
+	if(level==N)
+	{
+		
+		if(cableLength>sum)
+		{
+			cableLength=sum;
+			copyPath();
+		}
+		return;
+	}
+
+	for(int i=0;i<N;i++)
+	{
+		if(!vis[i])
+		{
+			vis[i]=true;
+			float distance=0;
+			if(level>0)
+			{
+				distance=calculate(i,pi);
+			}
+			tmpPath[level]=i;
+			recur(level+1,sum+distance,i);
+			vis[i]=false;
+		}
+	}
+}
+int main()
+{
+	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
+	int T=1;
+	while(T++)
+	{
+		reset();
+		scanf("%d",&N);
+		if(N==0)
+			break;
+		for(int i=0;i<N;i++)
+		{
+			scanf("%d %d",&xcord[i],&ycord[i]);
+		}
+		recur(0,0,0);
+		printf("**********************************************************\n");
+		printf("Network #%d\n",T-1);
+		printPath();
+		printf("Number of feet of cable required is %.2f.\n",cableLength);
+		
+	}
+	
+	return 0;
+}
+
 //336 - A Node Too Far
 
  
