@@ -1931,6 +1931,92 @@ int main()
 	return 0;
 }
 
+//10496 - Collecting Beepers
+
+#include<iostream>
+#include<stdio.h>
+#include<math.h>
+#define MAX 11
+int globalSum=100000000;
+int N;
+int row,colom;
+int xcord[MAX],ycord[MAX];
+bool vis[MAX]={false};
+void reset()
+{
+	globalSum=100000000;
+	N=0;
+	row=colom=0;
+	for(int i=0;i<MAX;i++)
+	{
+		xcord[MAX]=ycord[MAX]=vis[MAX]=0;
+	}
+}
+int calc(int previousIndex,int currentIndex,int level)
+{
+	if(level== (N-1))
+	{
+		int x=abs(xcord[previousIndex]-xcord[currentIndex])+abs(ycord[previousIndex]-ycord[currentIndex]);
+		int y=abs(xcord[0]-xcord[currentIndex]) + abs(ycord[0]-ycord[currentIndex]);
+		return x+y;
+		
+	}
+	else
+	{
+		int x=abs(xcord[previousIndex]-xcord[currentIndex]);
+		int y=abs(ycord[previousIndex]-ycord[currentIndex]);
+		return x+y;
+	}
+
+}
+void recur(int level,int sum,int previousIndex)
+{
+	if(level==N)
+	{
+		if(globalSum>sum)
+		{
+			globalSum=sum;
+			//printf("%d\n",globalSum);
+		}
+		return;
+	}
+	for(int i=1;i<=N;i++)
+	{
+		if(!vis[i])
+		{	
+			vis[i]=true;
+			int distance=0;
+			distance=calc(previousIndex,i,level);
+			recur(level+1,sum+distance,i);
+			vis[i]=false;
+			
+		}
+	}
+}
+int main()
+{
+	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
+	int T;
+	scanf("%d",&T);
+	for(int i=1;i<=T;i++)
+	{
+		scanf("%d %d",&row,&colom);
+		scanf("%d %d",&xcord[0],&ycord[0]);
+		scanf("%d",&N);
+		for(int i=1;i<=N;i++)
+		{
+			scanf("%d %d",&xcord[i],&ycord[i]);
+		}
+	
+		recur(0,0,0);
+		printf("The shortest path has length %d\n",globalSum);
+		reset();
+	}
+	return 0;
+}
+
+
 //336 - A Node Too Far
 
  
