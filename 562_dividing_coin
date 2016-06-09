@@ -1,0 +1,72 @@
+//562
+#include<iostream>
+#include<cmath>
+
+using namespace std;
+int data[101];
+int dp[101][50500];
+int numberofdata;
+int total;
+
+int recursion(int level,int sum)
+{
+	if(dp[level][sum]>=0)
+		return dp[level][sum];
+	if(level==numberofdata)
+	{
+		//printf("%d ",total-sum);
+		int sum2= abs(total-sum);
+		return abs(sum-sum2);
+	}
+	int left=recursion(level+1,sum);
+	int right=recursion(level+1,sum+data[level]);
+	if(left <= right)
+		return dp[level][sum]=left;
+	else
+		return dp[level][sum]=right;
+}
+
+int calcTotal()
+{
+	int t=0;
+	for(int i=0;i<numberofdata;i++)
+	{
+		t+=data[i];
+	}
+	return t;
+}
+
+void readinput()
+{
+	scanf("%d",&numberofdata);
+	for(int i=0;i<numberofdata;i++)
+		scanf("%d",&data[i]);
+}
+void resetdata()
+{
+	total=0;
+	numberofdata=0;
+	for(int i=0;i<101;i++)
+	{
+		data[i]=0;
+		for(int j=0;j<50500;j++)
+		{
+			dp[i][j]=-1;
+		}
+	}
+}
+
+int main()
+{
+	freopen("input.txt","r",stdin);
+	int numberofTestcase;
+	scanf("%d",&numberofTestcase);
+	for(int t=0;t<numberofTestcase;t++)
+	{
+		resetdata();
+		readinput();
+		total=calcTotal();
+		printf("%d\n",recursion(0,0));	
+	}
+	return 0;
+}
