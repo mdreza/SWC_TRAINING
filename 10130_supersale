@@ -1,0 +1,87 @@
+//10130
+#include<iostream>
+using namespace std;
+#define max 1003
+int NP,NO;
+int P[max],W[max];
+int People[max];
+int result=0;
+int dp[1003][33];
+
+void resetdp()
+{
+	for(int i=0;i<1003;i++)
+	{
+		for(int j=0;j<33;j++)
+		{
+			dp[i][j]=-1;
+		}
+	}
+}
+
+int solve(int i,int remaining)
+{
+	if(i==NO)
+	{
+		return 0;
+	}
+	if(dp[i][remaining]>=0)
+		return dp[i][remaining];
+	
+	int right;
+	int left=solve(i+1,remaining);
+	if(remaining-W[i]>=0)
+	{
+		right=solve(i+1,remaining-W[i])+P[i];
+	}else
+	{
+		right=0;
+	}
+	if(left>right)
+		return dp[i][remaining]=left;
+	else 
+		return dp[i][remaining]=right;
+}
+
+void reset()
+{
+	result=0;
+	for(int i=0;i<max;i++)
+	{
+		P[i]=0;
+		W[i]=0;
+		People[i]=0;
+	}
+}
+
+int main()
+{
+	//freopen("input.txt","r",stdin);
+	int nt;
+	scanf("%d",&nt);
+	for(int t=0;t<nt;t++)
+	{
+		scanf("%d",&NO);
+		for(int i=0;i<NO;i++)
+			scanf("%d %d",&P[i],&W[i]);
+
+		scanf("%d",&NP);
+		for(int i=0;i<NP;i++)
+			scanf("%d",&People[i]);
+
+		int totalResult=0;
+		
+		for(int i=0;i<NP;i++)
+		{
+			resetdp();
+			result=solve(0,People[i]);
+			//printf("-------%d\n",result);
+			totalResult+=result;
+			result=0;
+			
+		}
+		printf("%d\n",totalResult);
+		reset();
+	}
+	return 0;
+}
