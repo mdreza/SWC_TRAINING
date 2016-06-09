@@ -1,0 +1,114 @@
+//990
+#include<iostream>
+using namespace std;
+#define max 31
+int N;
+int t,w,d[max],v[max];
+int data[max];
+int copyofdata[max];
+int finalsum;
+int count;
+
+void copydata()
+{
+	for(int i=0;i<max;i++)
+	{
+		copyofdata[i]=data[i];
+	}
+}
+
+void printdata()
+{
+	printf("%d\n",finalsum);
+	for(int i=0;i<max;i++)
+	{
+		if(copyofdata[i])
+		{
+			count++;
+		}
+	}
+	printf("%d\n",count);
+
+	for(int i=0;i<max;i++)
+	{
+		if(copyofdata[i])
+		{
+			printf("%d %d\n",d[i],v[i]);
+		}
+	}
+}
+
+void calcresult()
+{
+	int tempsum=0;
+	for(int i=0;i<N;i++)
+	{
+		if(data[i])
+			tempsum+=v[i];
+	}
+	if(tempsum>finalsum)
+	{
+		finalsum=tempsum;
+		copydata();
+	}
+	//printf("\n");
+}
+void solve(int i,int remaing_t)
+{
+	if(i==N)
+	{
+		calcresult();
+		return;
+	}
+
+	for(int j=0;j<2;j++)
+	{
+		
+		if(j==0)
+		{
+			data[i]=j;
+			solve(i+1,remaing_t);
+		}else
+		{
+			if(remaing_t-3*w*d[i] >=0)
+			{
+				data[i]=j;
+				solve(i+1,remaing_t-3*w*d[i]);
+			}
+		}
+	}
+}
+
+void resetdata()
+{
+	//N=0;
+	//t=w=0;
+	finalsum=count=0;
+	for(int i=0;i<max;i++)
+	{
+		d[i]=v[i]=data[i]=copyofdata[i]=0;
+	}
+}
+int main()
+{
+	bool firsttime=true;
+	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
+	while(scanf("%d %d",&t,&w)!=EOF)
+	{
+		if(firsttime)
+			firsttime=false;
+		else
+			printf("\n");
+	resetdata();
+	scanf("%d",&N);
+	for(int i=0;i<N;i++)
+		{
+			scanf("%d %d",&d[i],&v[i]);
+		}
+	solve(0,t);
+	printdata();
+	}
+	return 0;
+}
+
