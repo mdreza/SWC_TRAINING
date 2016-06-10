@@ -1,7 +1,7 @@
 //126
 #include<iostream>
 using namespace std;
-
+char s1[41],s2[201];
 char alpha[21]; // input alphabet
 char alphaHolder[21];// to hold permutation step step alphabet
 bool vis[21];
@@ -29,6 +29,20 @@ void generateAlpha(char* s1) // remove spaces from input string and generate cha
 		}
 	}
 	Index=index;					// Update number of input alphabet Index
+
+	for(int i=0;i<index;i++)		// output require lexical order so sort charecter before permute
+	{
+		for(int j=i;j<index;j++)
+		{
+			char temp='\0';
+			if(alpha[i]>alpha[j])
+			{
+				temp=alpha[i];
+				alpha[i]=alpha[j];
+				alpha[j]=temp;
+			}
+		}
+	}
 }
 
 void generateCOnditionArray(char* s2) // 
@@ -119,14 +133,21 @@ void reset()
 	}
 	for(int i=0;i<27;i++)
 		for(int j=0;j<27;j++)
-			condition[i][i]=false;
+		{
+			condition[i][j]=false;
+		}
+	for(int i=0;i<41;i++)
+		s1[i]='\0';
+	for(int i=0;i<201;i++)
+		s2[i]='\0';
 
 }
 int main()
 {
 	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
 	int firsttime=true;
-	char s1[41],s2[201];
+	
 	while(gets(s1)) // until end of file...
 	{
 		if(firsttime)
@@ -137,6 +158,7 @@ int main()
 		gets(s2);
 		generateCOnditionArray(s2); // generate conditional array for "a<b" logic
  		permute(0);
+		//printf("\n");
 		reset();
 	}
 	return 0;
