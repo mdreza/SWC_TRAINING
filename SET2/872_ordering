@@ -1,0 +1,187 @@
+//872
+#include<iostream>
+using namespace std;
+char s1[41],s2[201];
+char alpha[21]; // input alphabet
+char alphaHolder[21];// to hold permutation step step alphabet
+bool vis[21];
+bool condition[27][27]; // a<b,,,, condition[a][b]=true;
+int Index=0;			//number of input charecter	
+bool thereIsAnswer=false;
+
+int getindex(char ch) // char to int map ... need to used in condition[a][b].. value of a and b
+{
+	return ch-'A';
+}
+
+char getchar(int i)// int to char map
+{
+	return i+'A';
+}
+void generateAlpha(char* s1) // remove spaces from input string and generate char array to apply permutation on
+{
+	int index=0;
+	for(int i=0;s1[i];i++)
+	{
+		if(s1[i]>='A' &&s1[i]<='Z') // anything not between a-z will be discarded
+		{
+			alpha[index]=s1[i];
+			index++;
+		}
+	}
+	Index=index;					// Update number of input alphabet Index
+
+	for(int i=0;i<index;i++)		// output require lexical order so sort charecter before permute
+	{
+		for(int j=i;j<index;j++)
+		{
+			char temp='\0';
+			if(alpha[i]>alpha[j])
+			{
+				temp=alpha[i];
+				alpha[i]=alpha[j];
+				alpha[j]=temp;
+			}
+		}
+	}
+}
+
+void generateCOnditionArray(char* s2) // 
+{
+	char cAlpha[101];
+	int index=0;
+	for(int i=0;s2[i];i++)				// remove spaces from input string and generate char array
+	{
+		if(s2[i]>='A' && s2[i]<='Z')
+		{
+			cAlpha[index]=s2[i];
+			index++;
+		}
+	}
+	
+	for(int i=0;i<index;i=i+2)			// if char array is "abcd" then condition[a][b]=true/// condition[c][d]=true..thus use i+2 for i and i+1
+	{
+		condition[getindex(cAlpha[i])][getindex(cAlpha[i+1])]=true;
+	}
+}
+
+void printfdata()
+{
+	bool isfirst=true;
+	for(int i=0;i<Index;i++)
+	{
+		if(isfirst)
+			isfirst=false;
+		else
+			printf(" ");
+
+		printf("%c",alphaHolder[i]);
+	}
+	printf("\n");
+
+	thereIsAnswer=true;
+	//puts(alphaHolder);
+
+	//printf("\n");
+}
+
+bool isalreadycontain(char ch) // check if previously generated permutation contain the char,, which should not.. it will violate the a<b condition
+{
+	for(int i=0;i<Index;i++)
+	{
+		if(alphaHolder[i]==ch)
+			return true;
+	}
+	return false;
+}
+// if a<b then it is not okay to place a after b... so before placing need to check what the condition[a][b] contain
+// if condition[a][b]=1,,, need to check if the permute array alphaHolder contain b... if true we cant place a after that
+bool isRelationOK(int i)
+{
+	for(int j=0;j<27;j++)
+	{
+		if(condition[i][j])
+		{
+			if(isalreadycontain(getchar(j)))
+				return false;
+		}
+	}
+	return true;
+	
+}
+
+void permute(int level) //level needed to insert char in  alphaHolder[] in every step
+{
+	if(level==Index)		
+	{
+		printfdata();
+		return;
+	}
+	for(int i=0;alpha[i];i++)
+	{
+		if(!vis[i])
+		{
+			if(isRelationOK(getindex(alpha[i])))
+			{
+				vis[i]=true;
+				alphaHolder[level]=alpha[i];
+				permute(level+1);
+				vis[i]=false;				//need to be false so other can use it ...basic of permutation generation
+				alphaHolder[level]='\0';	// need to reset... basic of permutation generation
+			}
+		}
+	}
+}
+
+void reset()
+{
+	thereIsAnswer=false;
+	Index=0;
+	for(int i=0;i<21;i++)
+	{
+		alpha[i]='\0';
+		alphaHolder[i]='\0';
+		vis[i]=false;
+	}
+	for(int i=0;i<27;i++)
+		for(int j=0;j<27;j++)
+		{
+			condition[i][j]=false;
+		}
+
+	for(int i=0;i<41;i++)
+		s1[i]='\0';
+
+	for(int i=0;i<201;i++)
+		s2[i]='\0';
+
+}
+int main()
+{
+	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
+	int firsttime=true;
+	int nt; 
+	scanf("%d\n",&nt);
+	for(int i=0;i<nt;i++)
+	{
+		
+		gets(s1);
+		generateAlpha(s1);			// extract all alphabet from input
+		gets(s2);
+		generateCOnditionArray(s2); // generate conditional array for "a<b" logic
+		if(firsttime)
+			firsttime=false;
+		else
+			printf("\n");
+
+ 		permute(0);
+
+		if(!thereIsAnswer)
+			printf("NO\n");
+		//printf("\n");
+		reset();
+		getchar();// to read the newline charecter after each testcase
+	}
+	return 0;
+}
