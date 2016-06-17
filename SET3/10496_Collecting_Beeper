@@ -1,0 +1,78 @@
+//10496_Collecting_Beeper
+#include<iostream>
+using namespace std;
+#define max 403
+
+bool vis[max];
+int x[max],y[max];
+int startX,startY;
+int boardX,boardY;
+int numberofBeeper;
+int minimumdistance=1000000;
+void reset()
+{
+	for(int i=0;i<max;i++)
+	{
+		x[i]=y[i]=vis[i]=0;
+	}
+	minimumdistance=1000000;
+	//startX=startY=boardX=boardY=numberofBeeper=0;
+}
+
+int calculateDistance(int prevX,int curX,int level)
+{
+	int distance=0;
+	if(level==(numberofBeeper-1))
+	{
+		distance=(abs(x[curX]-x[prevX])+abs(y[curX]-y[prevX]))+(abs(x[curX]-x[0])+abs(y[curX]-y[0]));
+	}else
+	{
+		distance=abs(x[curX]-x[prevX])+abs(y[curX]-y[prevX]);
+	}
+	return distance;
+}
+
+void recursion(int level,int sum,int previousCord)
+{
+	if(level==numberofBeeper)
+	{
+		
+		if(sum<minimumdistance)
+			minimumdistance=sum;
+			
+		return;
+	}
+	for(int i=1;i<=numberofBeeper;i++)
+	{
+		if(!vis[i])
+		{
+			vis[i]=true;
+			int distance=calculateDistance(previousCord,i,level);
+			recursion(level+1,sum+distance,i);
+			vis[i]=false;
+		}
+	}
+}
+
+int main()
+{
+	int testcase;
+	scanf("%d",&testcase);
+	for(int i=1;i<=testcase;i++)
+	{
+		scanf("%d %d",&boardX,&boardY);
+		scanf("%d %d",&startX,&startY);
+		scanf("%d",&numberofBeeper);
+		x[0]=startX;
+		y[0]=startY;
+		for(int i=1;i<=numberofBeeper;i++)
+		{
+			scanf("%d %d",&x[i],&y[i]);
+		}
+
+		recursion(0,0,0);
+		printf("The shortest path has length %d\n",minimumdistance);
+		reset();
+	}
+	return 0;
+}
