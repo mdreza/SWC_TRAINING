@@ -1,0 +1,156 @@
+//750-8 Queens Chess Problem
+#include<iostream>
+using namespace std;
+#define max 8
+
+bool vis[max][max];
+int numberofqueen=0;
+int track[max]={-1};
+int count=0;
+int solutionBank[93][max];
+
+bool isSafetoPlace(int row,int colom)
+{
+//	printf("up\n");
+	for(int i=row;i>=0;i--)
+	{
+		if(vis[i][colom])
+		return false;
+	}
+//	printf("down\n");
+	for(int i=row;i<max;i++)
+	{
+		if(vis[i][colom])
+		return false;
+	}
+	
+//	printf("left\n");
+	for(int j=colom;j>=0;j--)
+	{
+		if(vis[row][j])
+		return false;
+	}
+	
+//	printf("right\n");
+	for(int j=colom;j<max;j++)
+	{
+		if(vis[row][j])
+		return false;
+	}
+	
+//	printf("upleft\n");
+	for(int i=row,j=colom;i>=0 && j>=0;i--,j--)
+	{
+		if(vis[i][j])
+		return false;
+	}
+	
+//	printf("downright\n");
+	for(int i=row,j=colom;i<max && j<max;i++,j++)
+	{
+		if(vis[i][j])
+		return false;
+	}
+	
+//	printf("upright\n");
+	for(int i=row,j=colom;i>=0 && j<max;i--,j++)
+	{
+		if(vis[i][j])
+		return false;
+	}
+	
+//	printf("downleft\n");
+	for(int i=row,j=colom;i<max && j>=0;i++,j--)
+	{
+		if(vis[i][j])
+		return false;
+	}
+	return true;
+}
+
+void storedata()
+{
+	for(int i=0;i<max;i++)
+	{
+		solutionBank[count][i]=track[i];
+	}
+	count++;
+}
+
+
+void recursion(int colom,int numberofqueen)
+{
+//	printf("numberofqueen:%d \n",numberofqueen);
+	if(numberofqueen==max)
+	{
+		//printf("numberofqueen:%d \n",numberofqueen);
+		storedata();
+		return;
+	}
+	for(int row=0;row<max;row++)
+		{
+		//	printf("row:%d \n",row);
+			if(!vis[row][colom])
+			{
+			//	printf("row:%d col:%d \n",row,colom);
+				if (isSafetoPlace(row,colom))
+				{
+					vis[row][colom]=true;
+					track[colom]=row;
+			//		printf("safe row:%d col:%d \n",row,colom);
+					recursion(colom+1,numberofqueen+1);
+					vis[row][colom]=false;
+					track[colom]=-1;
+					
+				}
+			}
+		}
+
+}
+
+void printsolution(int row,int colom)
+{
+	int answeCount=0;
+	for(int i=0;i<92;i++)
+	{
+		if(solutionBank[i][colom]==row)
+		{
+			answeCount++;
+			printf("%2d      ",answeCount);
+			bool firstime=true;
+			for(int j=0;j<max;j++)
+			{
+				if(firstime)
+					firstime=false;
+				else
+					printf(" ");
+				
+				printf("%d",solutionBank[i][j]+1);
+			}
+			printf("\n");
+		}
+	}
+}
+
+int main()
+{
+
+	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
+	recursion(0,0); // generate all 92 solution at a time... then just search through each solution.
+	int testcase;
+	scanf("%d",&testcase);
+	int x,y;
+	for(int i=1;i<=testcase;i++)
+	{
+		if(i!=1)
+		printf("\n");// for presentation error
+		
+		scanf("%d %d",&x,&y);
+		printf("SOLN       COLUMN\n");
+		printf(" #      1 2 3 4 5 6 7 8\n\n");
+		printsolution(x-1,y-1);
+		
+	}	
+	return 0;
+}
