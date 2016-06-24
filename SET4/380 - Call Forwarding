@@ -1,0 +1,86 @@
+//380 - Call Forwarding
+
+#include<iostream>
+using namespace std;
+#define max 9999
+int bordStarttime[max][max];
+int bordEndtime[max][max];
+bool vis[max][max];
+int forwarded=0;
+
+void reset()
+{
+	forwarded=0;
+	for(int i=0;i<max;i++)
+	{
+		for(int j=0;j<max;j++)
+		{
+			bordStarttime[i][j]=0;
+			bordEndtime[i][j]=0;
+			vis[i][j]=0;
+		}
+	}
+}
+int solve(int askedTime,int askedSource)
+{
+	forwarded=askedSource;
+	for(int c=0;c<max;c++)
+	{	
+			int bst=bordStarttime[askedSource][c];
+			int bet=bordEndtime[askedSource][c];
+			if(askedTime>=bst  && askedTime<=bet)
+			{
+				if(!vis[askedSource][c])
+				{
+					vis[askedSource][c]=true;
+					solve(askedTime,c);
+					vis[askedSource][c]=false;
+				}
+				else
+				{
+					return forwarded=9999;
+				}
+			}
+	}
+	return forwarded;
+}
+
+int main()
+{
+	//freopen("input.txt","r",stdin);
+	int ts;
+	scanf("%d",&ts);
+	printf("CALL FORWARDING OUTPUT\n");
+	for(int i=0;i<ts;i++)
+	{
+		printf("SYSTEM %d\n",i+1);
+		int source, time, duration, target;
+		int askedTime,askedSource;
+		while(scanf("%d",&source))
+		{
+			if(source==0000)
+				break;
+			else
+			{
+				scanf("%d %d %d",&time,&duration,&target);
+				bordStarttime[source][target]=time;
+				bordEndtime[source][target]=time+duration;
+			}
+		}
+
+		while(scanf("%d",&askedTime))
+		{
+			if(askedTime==9000)
+				break;
+			else
+				scanf("%d",&askedSource);
+
+			int result=solve(askedTime,askedSource);
+			printf("AT %04d CALL TO %04d RINGS %04d\n",askedTime,askedSource,result);
+		}
+		reset();
+	}
+	printf("END OF OUTPUT\n");
+
+	return 0;
+}
