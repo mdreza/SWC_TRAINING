@@ -1,0 +1,250 @@
+#include<iostream>
+using namespace std;
+#define size 33
+struct Graph
+{
+	int node;
+	int ttl;
+};
+
+Graph qdata[size];
+Graph graph[size];
+bool vis[size];
+int mat[size][size];
+
+//--------------queue
+class Queue{
+public:
+	int front;
+	int rear;
+	int nodeid;
+	void enqueue(Graph data);
+	void dequeue();
+	Graph top();
+	bool isempty();
+
+	Queue()
+	{
+		front=rear=0;
+		nodeid=-1;
+	}
+};
+
+void Queue::enqueue(Graph data)
+{
+	if(rear==size)
+	{
+		printf("Queue Overflow\n");
+		return;
+	}
+	qdata[rear++]=data;
+}
+
+void Queue::dequeue()
+{
+	if(rear==front)
+	{
+		printf("Queue Underflow\n");
+		return;
+	}
+/*	for(int i=front;i<rear;i++)
+	{
+		qdata[i]=qdata[i+1];
+	}
+	qdata[rear].node=0;
+	qdata[rear].ttl=0;
+	rear--;
+	*/
+	front++;
+}
+
+Graph Queue::top()
+{
+	return qdata[front];
+}
+
+bool Queue::isempty()
+{
+	if(rear==front)
+		return true;
+	else
+		return false;
+
+}
+
+//--------------queue end
+
+//--------------bfs
+
+int indexof(Graph data)
+{
+	for(int i=0;i<size;i++)
+		{
+			if(graph[i].node==data.node)
+			{
+				return i;
+			}
+		}
+	return -1;
+}
+
+Graph dataof(int index)
+{
+	return graph[index];
+}
+
+
+
+
+//--------------bfs
+
+void bfs(int NODE,int TTL)
+{
+	Queue Q;
+	bool found=false;
+	Graph firstNode;
+	for(int i=0;i<size;i++)
+		{
+			if(graph[i].node==NODE)
+			{
+				firstNode=graph[i];
+				found=true;
+			}
+	}
+	if(!found)
+		return;
+	graph[indexof(firstNode)].ttl=0;
+	vis[indexof(firstNode)]=true;
+	Q.enqueue(graph[indexof(firstNode)]);
+	while(!Q.isempty())
+	{
+		Graph u=Q.top();
+		Q.dequeue();
+		for(int i=0;i<size;i++)
+		{
+			if(mat[indexof(u)][i]==1)
+			{
+				
+				if(!vis[i])
+				{
+					
+					vis[i]=1;
+					if(u.ttl+1 <= TTL)
+					{
+						graph[i].ttl=u.ttl+1;
+						Q.enqueue(graph[i]);
+					}
+				}
+			}
+		}
+	}
+	
+		
+
+}
+//--------------------bfs end
+void reset_graph()
+{
+	for(int i=0;i<size;i++)
+	{
+		graph[i].node=-1;
+		graph[i].ttl=-1;
+	}
+}
+
+void reset_graph_TTL()
+{
+	for(int i=0;i<size;i++)
+	{
+		graph[i].ttl=-1;
+	}
+}
+void reset_vis()
+{
+	for(int i=0;i<size;i++)
+	{
+		vis[i]=0;
+	}
+}
+
+void reset_mat()
+{
+	for(int i=0;i<size;i++)
+	{
+		for(int j=0;j<size;j++)
+			mat[i][j]=0;
+	}
+}
+
+int main()
+{
+	//freopen("input.txt","r",stdin);
+	//freopen("output.txt","w",stdout);
+	int ntestcase=0;
+	int numberofEdge;
+	while(scanf("%d",&numberofEdge))
+	{
+		if(numberofEdge==0)
+			break;
+		int index=0;
+		reset_graph();
+		reset_mat();
+		for(int i=0;i<numberofEdge;i++)
+		{
+			Graph U,V;
+			int u=-1;
+			int v=-1;
+			scanf("%d",&U.node);
+			//U.ttl=-1;
+			scanf("%d",&V.node);
+			//V.ttl=-1;
+			for(int i=0;i<size;i++)
+			{
+				if(graph[i].node==U.node)
+				{
+					u=i;
+				}
+			}
+
+			if(u<0)
+			{
+				u=index;
+				graph[index++]=U;
+			}
+
+			for(int i=0;i<size;i++)
+			{
+				if(graph[i].node==V.node)
+				{
+					v=i;
+				}
+			}
+			
+
+			if(v<0)
+			{
+				v=index;
+				graph[index++]=V;
+			}
+			mat[u][v]=1;
+			mat[v][u]=1;
+
+		}
+		int qnode,qttl;
+		while(scanf("%d %d",&qnode,&qttl))
+		{
+			if(qnode==0 && qttl==0)
+				break;
+			reset_graph_TTL();
+			reset_vis();
+			bfs(qnode,qttl);
+			int tempnumber=0;
+			for(int i=0;i<index;i++)
+				if(graph[i].ttl<0)
+					tempnumber++;
+			printf("Case %d: %d nodes not reachable from node %d with TTL = %d.\n",++ntestcase,tempnumber,qnode,qttl);
+		}
+	}
+	return 0;
+}
+
