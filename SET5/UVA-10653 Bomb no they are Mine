@@ -1,0 +1,161 @@
+// bfs shortest path - reza
+// prblem UVA-10653
+#include <stdio.h>
+#define QSIZE 1000010
+#define MAX 1001
+int fx[] = { 0, 0, 1, -1 };
+int fy[] = { 1, -1, 0, 0 };
+bool firstime = true;
+
+int front = 0;
+int rear = 0;
+
+struct Node{
+	int x;
+	int y;
+	int distance;
+};
+Node queue[QSIZE];
+
+int mine_map[MAX][MAX];
+bool visit_map[MAX][MAX];
+int row, col;
+#define valid(nx,ny) nx>=0 && nx<row && ny>=0 && ny<col
+Node src, dest;
+void reset()
+{
+	front = 0;
+	rear = 0;
+	for (int i = 0; i<MAX; i++)
+	{
+		for (int j = 0; j<MAX; j++)
+		{
+			mine_map[i][j] = 0;
+			visit_map[i][j] = false;
+		}
+	}
+	for (int i = 0; i<QSIZE; i++)
+	{
+		queue[i].x = -1;
+		queue[i].y = -1;
+		queue[i].distance = -1;
+	}
+
+}
+
+void enque(Node data)
+{
+	if (rear == QSIZE)
+		return; //overflow
+	queue[rear++] = data;
+}
+
+Node deque()
+{
+	Node v;
+	if (rear == front)
+	{
+		v.x = -1;
+		v.y = -1;
+		return v;
+	}
+	v = queue[front];
+	front++;
+	return v;
+}
+
+bool isEmpty()
+{
+	if (front == rear)
+		return true;
+	else
+		return false;
+}
+
+void printOutput()
+{
+	for (int i = 0; i<row; i++)
+	{
+		for (int j = 0; j<col; j++)
+			printf("%d ", mine_map[i][j]);
+		printf("\n");
+	}
+}
+
+void bfs()
+{
+	src.distance = 0;
+	visit_map[src.x][src.y] = true;
+	enque(src);
+	while (!isEmpty())
+	{
+		// printf("!isEmpty\n");
+		Node u;
+		u = deque();
+		if (u.x == dest.x && u.y == dest.y)
+		{
+			printf("%d", u.distance);
+			break;
+		}
+
+		for (int i = 0; i<3; i++)
+		{
+			int nx = u.x + fx[i];
+			int ny = u.y + fy[i];
+			if (valid(nx, ny) && !visit_map[nx][ny] && mine_map[nx][ny] != 1)
+			{
+				visit_map[nx][ny] = true;
+				Node v;
+				v.x = nx;
+				v.y = ny;
+				v.distance = u.distance + 1;
+				enque(v);
+			}
+
+		}
+
+
+
+	}
+
+}
+
+
+
+int main()
+{
+	//freopen("input.txt", "r", stdin);
+	//freopen("output.txt","w", stdout);
+//	int x = 0;
+	while (scanf("%d %d", &row, &col))
+	{
+		if (row == 0 && col == 0)
+			break;
+	//	x++;
+//printf("%d\n", x);
+		reset();
+		int no_of_rows;
+		scanf("%d", &no_of_rows);
+		for (int i = 0; i<no_of_rows; i++)
+		{
+			int cur_row, cur_col, no_of_mine;
+			scanf("%d %d", &cur_row, &no_of_mine);
+			for (int j = 0; j<no_of_mine; j++)
+			{
+				scanf("%d", &cur_col);
+				mine_map[cur_row][cur_col] = 1;
+			}
+		}
+		scanf("%d %d", &src.x, &src.y);
+		scanf("%d %d", &dest.x, &dest.y);
+		if (firstime)
+			firstime = false;
+		else
+			printf("\n");
+		bfs();
+		//printOutput();
+	}
+	return 0;
+}
+
+
