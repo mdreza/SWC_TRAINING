@@ -5,9 +5,10 @@ Configure NotePad++ with git:
 4. add this alias in bash_profile "alias npp='notepad++.exe -multiInst -nosession'"
 Now restart the git bash. and git bash should recognize npp as notepad++.exe.
 *** if it doesnt then find where the .bash_profile is created.. and move it to "c/user" user root directory
+5.git config --global core.editor "notepad++.exe -multiInst -nosession" // to add notepad++ as default editor.
 
 Adding New File:
-  1. Create new file in working directory
+  1. Create new file in working directory, "npp [filename].txt",this command will will open new file using notepad++,edit,save and exit the notepad++
   2. git status // shows untracked file
   3. git add [filename] // add the file untracted file in staging area
   4. git add . // add all the untracted file in staging area
