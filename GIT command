@@ -1,3 +1,5 @@
+adb shell setprop SimCheck.disable 1
+
 Configure NotePad++ with git:
 1. put [C:\Program Files (x86)\Notepad++] into your system path variable
 2. GIT bash should recognize notepad++ command now.
